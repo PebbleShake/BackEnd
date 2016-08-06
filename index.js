@@ -43,7 +43,7 @@ router.post('/webhook', function(req, res){
 
 router.post('/shake', function(req, res){
   var hand = {
-    name: req.body.name,
+    name: req.body.name + " " + req.body.surname,
     id: req.body.id
   }
   hands = shake(hand, hands, res)
