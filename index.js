@@ -33,11 +33,13 @@ app.get('/', function(request, response) {
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
-router.get('/handshake', function(req, res){
-  res.json({message: "WELCOME!"})
-})
 
+//HANDSHAKE API
 var hands = [];
+
+router.post('/webhook', function(req, res){
+  console.log(req.body)
+})
 
 router.post('/shake', function(req, res){
   var hand = {
@@ -45,16 +47,17 @@ router.post('/shake', function(req, res){
     id: req.body.id
   }
   hands = shake(hand, hands, res)
-  
 })
 
+//REGISTER ROUTER
 app.use("/api", router)
 
+//LISTEN
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
 
-
+//HANDSHAKE CODE
 function shake(hand, hands, res){
   if(hands.length == 0){
     hands.push(hand)
