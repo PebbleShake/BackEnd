@@ -37,6 +37,7 @@ router.get('/handshake', function(req, res){
 var hands = [];
 
 router.post('/shake', function(req, res){
+  console.log(req)
   var hand = {
     name: req.body.name
   }
