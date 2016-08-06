@@ -2,6 +2,7 @@ var opbeat = require('opbeat').start()
 
 var express = require('express');
 var app = express();
+var bodyParser = require('body-parser');
 
 var webdriverio = require('webdriverio');
 var options = {
@@ -29,6 +30,8 @@ app.get('/', function(request, response) {
 
 
 
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 router.get('/handshake', function(req, res){
   res.json({message: "WELCOME!"})
@@ -37,11 +40,12 @@ router.get('/handshake', function(req, res){
 var hands = [];
 
 router.post('/shake', function(req, res){
-  console.log(req)
   var hand = {
-    name: req.body.name
+    name: req.body.name,
+    id: req.body.id
   }
-  shake(hand, hands)
+  hands = shake(hand, hands, res)
+  
 })
 
 app.use("/api", router)
@@ -50,22 +54,27 @@ app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
 
-//CODE
 
-
-function shake(hand, hands){
-  if(hands.length < 2){
+function shake(hand, hands, res){
+  if(hands.length == 0){
     hands.push(hand)
-  }else{
-    return shakeHands(hands)
+    res.json({message: hand.name + " is trying to shake hands"})
+    return hands
+  }else if(hands[0].id == hand.id){
+    res.json({message: hand.name + " is already trying to shake hands"})
+    return hands
+  }
+  else if(hands.length == 1){
+    hands.push(hand)
+    return shakeHands(hands, res)
   }
   return hands
 }
 
-function shakeHands(hands){
+function shakeHands(hands, res){
   var hand1 = hands[0]
   var hand2 = hands[1]
-  console.log(hand1.name + " shook hands with " +  hand2.name)
+  res.json({message: hand1.name + " shook hands with " +  hand2.name})
   return []
 }
 
