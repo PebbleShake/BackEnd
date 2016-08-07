@@ -13,6 +13,14 @@ var options = {
 
 var router = express.Router()
 
+var Pusher = require('pusher');
+
+var pusher = new Pusher({
+  appId: '233337',
+  key: '0a77f43c6b61814e9d27',
+  secret: '7fc8f317763e6636e24e',
+  encrypted: true
+});
 
 app.set('port', (process.env.PORT || 5000));
 
@@ -61,6 +69,9 @@ app.listen(app.get('port'), function() {
 function shake(hand, hands, res){
   if(hands.length == 0){
     hands.push(hand)
+    pusher.trigger('handshakechannel', 'first', {
+      "message": "hello world"
+    });
     res.json({message: hand.name + " is trying to shake hands"})
     return hands
   }else if(hands[0].id == hand.id){
@@ -69,6 +80,9 @@ function shake(hand, hands, res){
   }
   else if(hands.length == 1){
     hands.push(hand)
+    pusher.trigger('handshakechannel', 'second', {
+      "message": "hello world"
+    });
     return shakeHands(hands, res)
   }
   return hands
@@ -78,6 +92,9 @@ function shakeHands(hands, res){
   var hand1 = hands[0]
   var hand2 = hands[1]
   res.json({message: hand1.name + " shook hands with " +  hand2.name})
+  pusher.trigger('handshakechannel', 'handshake', {
+    "message": "hello world"
+  });
   return []
 }
 
