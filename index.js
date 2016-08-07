@@ -23,7 +23,7 @@ var pusher = new Pusher({
 });
 
 
-var Twitter = require('twitter.js');
+var Twitter = require('/twitter.js');
 
 app.set('port', (process.env.PORT || 5000));
 
