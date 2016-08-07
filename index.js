@@ -100,8 +100,14 @@ function shake(hand, hands, res){
 function shakeHands(hands, res){
   var hand1 = hands[0]
   var hand2 = hands[1]
-Twitter.makeWaltFollowJessie(function(){})
-Twitter.makeJessieFollowWalt(function(){})
+Twitter.makeWaltFollowJessie(function(){
+  Twitter.makeJessieFollowWalt(function(){
+    pusher.trigger('handshakechannel', 'follow', {
+      "message": "hello world"
+    });
+  })
+
+})
   res.json({message: hand1.name + " shook hands with " +  hand2.name})
   return []
 }
