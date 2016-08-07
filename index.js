@@ -22,6 +22,9 @@ var pusher = new Pusher({
   encrypted: true
 });
 
+
+var Twitter = require('twitter.js');
+
 app.set('port', (process.env.PORT || 5000));
 
 app.use(express.static(__dirname + '/public'));
@@ -52,7 +55,13 @@ router.post('/webhook', function(req, res){
 router.post('/shake', function(req, res){
   var hand = {
     name: req.body.name + " " + req.body.surname,
-    id: req.body.id
+    id: req.body.id,
+    coord: {
+    lat1: req.body.lat1,
+      lat2: req.body.lat2,
+      lon1: req.body.lon1,
+      lon2: req.body.lon2
+  }
   }
   hands = shake(hand, hands, res)
 })
@@ -91,9 +100,25 @@ function shake(hand, hands, res){
 function shakeHands(hands, res){
   var hand1 = hands[0]
   var hand2 = hands[1]
+Twitter.makeWaltFollowJessie(function(){})
+Twitter.makeJessieFollowWalt(function(){})
   res.json({message: hand1.name + " shook hands with " +  hand2.name})
   return []
 }
 
+
+function checkCoord(lat1, lat2, lon1, lon2){
+  var R = 6371; // km
+  var dLat = (lat2-lat1).toRad();
+  var dLon = (lon2-lon1).toRad();
+  var lat1 = lat1.toRad();
+  var lat2 = lat2.toRad();
+
+  var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  var d = R * c;
+  return (d < 5)
+}
 
 
