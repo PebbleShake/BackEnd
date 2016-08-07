@@ -20,18 +20,18 @@ function TwitterApi(){
     })
     var waltId = '762181838785933312'
     
-    
-    function makeWaltFollowJessie(callback){
+    this.makeWaltFollowJessie = function(callback){
         followUser(WALT, jessieId, callback)
     }
     
-    function makeJesseFollowWalt(callback){
+    this.makeJessieFollowWalt = function(callback){
         followUser(JESSIE, waltId, callback)
     }
+    function followUser(twit, target, callback){
+        twit.post('friendships/create', { id: target }, callback); 
+    }
+
 }
 
-function followUser(twit, target, callback){
-    twit.post('friendships/create', { id: target }, callback); 
-}
 
-module.exports = TwitterApi()
+module.exports = TwitterApi

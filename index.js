@@ -23,7 +23,7 @@ var pusher = new Pusher({
 });
 
 
-var Twitter = require('../twitter.js');
+var Twitter = require('./twitter.js');
 
 app.set('port', (process.env.PORT || 5000));
 
@@ -63,7 +63,7 @@ router.post('/shake', function(req, res){
       lon2: req.body.lon2
   }
   }
-  hands = shake(hand, hands, res)
+  hands = shake(hand, hands, res, new Twitter())
 })
 
 //REGISTER ROUTER
@@ -75,7 +75,7 @@ app.listen(app.get('port'), function() {
 });
 
 //HANDSHAKE CODE
-function shake(hand, hands, res){
+function shake(hand, hands, res, tw){
   if(hands.length == 0){
     hands.push(hand)
     pusher.trigger('handshakechannel', 'first', {
@@ -92,22 +92,23 @@ function shake(hand, hands, res){
     pusher.trigger('handshakechannel', 'handshake', {
       "message": "hello world"
     });
-    return shakeHands(hands, res)
+    return shakeHands(hands, res, tw)
   }
   return hands
 }
 
-function shakeHands(hands, res){
+function shakeHands(hands, res, tw){
   var hand1 = hands[0]
   var hand2 = hands[1]
-Twitter.makeWaltFollowJessie(function(){
-  Twitter.makeJessieFollowWalt(function(){
+  tw.makeWaltFollowJessie(function(){})
+    
+  tw.makeJessieFollowWalt(function(){
     pusher.trigger('handshakechannel', 'follow', {
       "message": "hello world"
     });
   })
 
-})
+
   res.json({message: hand1.name + " shook hands with " +  hand2.name})
   return []
 }
