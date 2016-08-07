@@ -80,7 +80,7 @@ function shake(hand, hands, res){
   }
   else if(hands.length == 1){
     hands.push(hand)
-    pusher.trigger('handshakechannel', 'second', {
+    pusher.trigger('handshakechannel', 'handshake', {
       "message": "hello world"
     });
     return shakeHands(hands, res)
@@ -92,9 +92,6 @@ function shakeHands(hands, res){
   var hand1 = hands[0]
   var hand2 = hands[1]
   res.json({message: hand1.name + " shook hands with " +  hand2.name})
-  pusher.trigger('handshakechannel', 'handshake', {
-    "message": "hello world"
-  });
   return []
 }
 
